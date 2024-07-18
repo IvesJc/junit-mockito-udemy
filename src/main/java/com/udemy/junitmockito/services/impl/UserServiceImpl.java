@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Integer id) {
         Optional<User> optionalUser = userRepository.findById(id);
-
         return optionalUser.orElseThrow(ObjectNotFoundException::new);
     }
 
@@ -44,12 +43,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Integer id) {
+    public User updateUser(Integer id, UserDTO userDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()){
-            userRepository.deleteById(id);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setName(userDTO.name());
+            user.setEmail(userDTO.email());
+            user.setPassword(userDTO.password());
+
+            findByEmail(userDTO);
+
+            userRepository.save(user);
+            return user;
         }
         throw new ObjectNotFoundException();
+    }
+
+    @Override
+    public void deleteUser(Integer id) {
+        findById(id);
+        userRepository.deleteById(id);
     }
 
     private void findByEmail(UserDTO userDTO) {

@@ -15,6 +15,8 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserResource {
 
+    public static final String ID = "/{id}";
+
     @Autowired
     UserServiceImpl userService;
 
@@ -29,7 +31,7 @@ public class UserResource {
                         user.getPassword())).toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(ID)
     public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
         User newUser = userService.findById(id);
         return ResponseEntity.ok(mapper(newUser));
@@ -40,7 +42,7 @@ public class UserResource {
         URI uri =
                 ServletUriComponentsBuilder.
                         fromCurrentRequest().
-                        path("/{id}").
+                        path(ID).
                         buildAndExpand(
                                 userService.createUser(user).getId()
                         ).
@@ -48,6 +50,19 @@ public class UserResource {
         return ResponseEntity.created(uri).build();
     }
 
+    @PutMapping(ID)
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Integer id,
+                                              @RequestBody UserDTO userDTO){
+        User newUser = userService.updateUser(id, userDTO);
+        return ResponseEntity.ok(mapper(newUser));
+    }
+
+    @DeleteMapping(ID)
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable Integer id){
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+
+    }
     public UserDTO mapper(User newUser){
         return new UserDTO(newUser.getId(), newUser.getName(), newUser.getEmail(),
                 newUser.getPassword());
