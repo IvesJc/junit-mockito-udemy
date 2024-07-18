@@ -1,7 +1,7 @@
 package com.udemy.junitmockito.resources;
 
 import com.udemy.junitmockito.models.User;
-import com.udemy.junitmockito.services.UserService;
+import com.udemy.junitmockito.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import java.util.List;
 public class UserResource {
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @GetMapping
     public ResponseEntity<List<User>> findAll(){
