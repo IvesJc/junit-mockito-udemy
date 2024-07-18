@@ -1,5 +1,6 @@
 package com.udemy.junitmockito.services.impl;
 
+import com.udemy.junitmockito.dto.UserDTO;
 import com.udemy.junitmockito.models.User;
 import com.udemy.junitmockito.repositories.UserRepository;
 import com.udemy.junitmockito.services.UserService;
@@ -26,12 +27,12 @@ public class UserServiceImpl implements UserService {
         return optionalUser.orElseThrow(ObjectNotFoundException::new);
     }
 
-    public User createUser(User user){
+    public User createUser(UserDTO userDTO){
         User newUser = new User(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getPassword());
+                userDTO.id(),
+                userDTO.name(),
+                userDTO.email(),
+                userDTO.password());
         userRepository.save(newUser);
         return newUser;
     }

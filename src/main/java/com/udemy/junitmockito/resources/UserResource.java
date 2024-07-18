@@ -1,5 +1,6 @@
 package com.udemy.junitmockito.resources;
 
+import com.udemy.junitmockito.dto.UserDTO;
 import com.udemy.junitmockito.models.User;
 import com.udemy.junitmockito.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,22 @@ public class UserResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Integer id){
+    public ResponseEntity<UserDTO> findById(@PathVariable Integer id){
         User user = userService.findById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok().body(new UserDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPassword()));
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user){
         User newUser = userService.createUser(user);
-        return ResponseEntity.ok(newUser);
+        return ResponseEntity.ok().body(new UserDTO(
+                newUser.getId(),
+                newUser.getName(),
+                newUser.getEmail(),
+                newUser.getPassword()));
     }
 }
