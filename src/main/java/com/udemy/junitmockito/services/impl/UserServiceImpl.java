@@ -3,6 +3,7 @@ package com.udemy.junitmockito.services.impl;
 import com.udemy.junitmockito.models.User;
 import com.udemy.junitmockito.repositories.UserRepository;
 import com.udemy.junitmockito.services.UserService;
+import com.udemy.junitmockito.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
     public User findById(Integer id){
         Optional<User> optionalUser = userRepository.findById(id);
 
-        return optionalUser.orElse(null);
+        return optionalUser.orElseThrow(ObjectNotFoundException::new);
     }
 
     public User createUser(User user){
