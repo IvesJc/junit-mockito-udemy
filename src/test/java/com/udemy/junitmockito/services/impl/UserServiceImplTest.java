@@ -3,6 +3,7 @@ package com.udemy.junitmockito.services.impl;
 import com.udemy.junitmockito.dto.UserDTO;
 import com.udemy.junitmockito.models.User;
 import com.udemy.junitmockito.repositories.UserRepository;
+import com.udemy.junitmockito.services.exceptions.EmailAlreadyExistsException;
 import com.udemy.junitmockito.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,7 +88,32 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUser() {
+    void whenCreateUserThenReturnSuccess() {
+        when(userRepository.save(any())).thenReturn(user);
+
+        User response = userService.createUser(userDTO);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
+
+    }
+    @Test
+    void whenCreateUserThenReturnAEmailAlreadyExistsException() {
+        when(userRepository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try {
+            optionalUser.get().setId(2);
+            userService.createUser(userDTO);
+        }catch (Exception e){
+            assertEquals(EmailAlreadyExistsException.class, e.getClass());
+            assertEquals("Email already registered!", e.getMessage());
+        }
+
     }
 
     @Test
