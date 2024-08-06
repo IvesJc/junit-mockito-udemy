@@ -3,6 +3,7 @@ package com.udemy.junitmockito.services.impl;
 import com.udemy.junitmockito.dto.UserDTO;
 import com.udemy.junitmockito.models.User;
 import com.udemy.junitmockito.repositories.UserRepository;
+import com.udemy.junitmockito.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -56,6 +57,18 @@ class UserServiceImplTest {
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException(){
+        when(userRepository.findById(anyInt())).thenThrow(new ObjectNotFoundException());
+
+        try {
+            userService.findById(ID);
+        }catch (Exception e){
+            assertEquals(ObjectNotFoundException.class, e.getClass());
+            assertEquals("Object not found!", e.getMessage());
+        }
     }
 
     @Test
